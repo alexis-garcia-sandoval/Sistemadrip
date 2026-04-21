@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %}Ventas{% endblock %}
+
+{% block content %}
+<div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem;">
+    <div>
+        <h1 class="page-title">VENTAS 💰</h1>
+        <p class="page-subtitle">{{ ventas|length }} venta(s) registrada(s)</p>
+    </div>
+    <div class="stat-card" style="min-width:180px;text-align:center;">
+        <div class="stat-icon">💰</div>
+        <div class="stat-value">${{ "%.2f"|format(total_ingresos) }}</div>
+        <div class="stat-label">Total Ingresos</div>
+    </div>
+</div>
+
+{% if ventas %}
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>#</th><th>Cliente</th><th>Correo</th>
+                <th>Total</th><th>Fecha</th><th>Estado</th><th>Detalle</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for v in ventas %}
+            <tr>
+                <td style="color:var(--purple);">#{{ v.id }}</td>
+                <td style="color:#e0d0ff;">{{ v.usuario.nombre }}</td>
+                <td style="color:rgba(192,160,255,.6);font-size:.85rem;">{{ v.usuario.correo }}</td>
+                <td style="color:var(--green);font-family:'Orbitron',monospace;">${{ "%.2f"|format(v.total) }}</td>
+                <td>{{ v.fecha.strftime('%d/%m/%Y %H:%M') }}</td>
+                <td><span class="badge badge-ok">{{ v.estado }}</span></td>
+                <td>
+                    {% for d in v.detalles %}
+                    <div style="font-size:.8rem;color:rgba(192,160,255,.7);">
+                        {{ d.producto.emoji }} {{ d.producto.nombre }} ×{{ d.cantidad }}
+                    </div>
+                    {% endfor %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="empty-state">
+    <div class="empty-icon">📊</div>
+    <p class="empty-text">Sin ventas todavía</p>
+</div>
+{% endif %}
+{% endblock %}

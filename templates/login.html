@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Iniciar Sesión{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-logo">
+            <span class="logo-text">DRIP</span>
+            <span class="logo-sub">STORE</span>
+        </div>
+
+        <h1 class="auth-title">INICIAR SESIÓN</h1>
+        <p class="auth-subtitle">Accede a tu cuenta 🔥</p>
+
+        <form method="POST" action="{{ url_for('auth.login') }}">
+            <div class="form-group">
+                <label class="form-label">Correo</label>
+                <input type="email" name="correo" class="form-control"
+                    placeholder="tu@correo.com" required autocomplete="email">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Contraseña</label>
+                <input type="password" name="contrasena" class="form-control"
+                    placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block" style="margin-top:1.5rem;">
+                ENTRAR 🚀
+            </button>
+        </form>
+
+        <p style="text-align:center; margin-top:1.5rem; color:rgba(192,160,255,.6); font-size:.9rem;">
+            ¿No tienes cuenta?
+            <a href="{{ url_for('auth.register') }}" class="auth-link">Regístrate aquí</a>
+        </p>
+
+        <p style="text-align:center; margin-top:.8rem; color:rgba(192,160,255,.35); font-size:.8rem;">
+            Demo admin: admin@sistemadrip.com / admin123
+        </p>
+    </div>
+</div>
+{% endblock %}

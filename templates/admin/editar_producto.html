@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}Editar Producto{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">EDITAR PRODUCTO ✏️</h1>
+    <p class="page-subtitle">{{ producto.emoji }} {{ producto.nombre }}</p>
+</div>
+
+<div style="max-width:600px;">
+    <div class="card">
+        <form method="POST" action="{{ url_for('admin.editar_producto', pid=producto.id) }}">
+            <div class="form-group">
+                <label class="form-label">Nombre del producto</label>
+                <input type="text" name="nombre" class="form-control"
+                    value="{{ producto.nombre }}" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Categoría</label>
+                <select name="categoria" class="form-control" required>
+                    {% for val, label in categorias %}
+                    <option value="{{ val }}" {% if producto.categoria == val %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+                <div class="form-group">
+                    <label class="form-label">Precio (MXN)</label>
+                    <input type="number" name="precio" class="form-control"
+                        value="{{ producto.precio }}" step="0.01" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Stock</label>
+                    <input type="number" name="stock" class="form-control"
+                        value="{{ producto.stock }}" min="0" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Descripción</label>
+                <textarea name="descripcion" class="form-control">{{ producto.descripcion or '' }}</textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">URL de imagen</label>
+                <input type="url" name="imagen_url" class="form-control"
+                    value="{{ producto.imagen_url or '' }}" placeholder="https://...">
+            </div>
+            <div style="display:flex;gap:1rem;margin-top:1rem;">
+                <button type="submit" class="btn btn-primary">💾 Actualizar</button>
+                <a href="{{ url_for('admin.productos') }}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

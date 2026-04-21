@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}Mis Pedidos{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">MIS PEDIDOS 📦</h1>
+    <p class="page-subtitle">{{ ventas|length }} compra(s) realizadas</p>
+</div>
+
+{% if ventas %}
+    {% for v in ventas %}
+    <div class="card" style="margin-bottom:1.2rem;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:.8rem;margin-bottom:1rem;">
+            <div>
+                <span style="font-family:'Orbitron',monospace;color:var(--purple);font-size:.85rem;">
+                    Pedido #{{ v.id }}
+                </span>
+                <span style="color:rgba(192,160,255,.5);font-size:.82rem;margin-left:1rem;">
+                    {{ v.fecha.strftime('%d/%m/%Y %H:%M') }}
+                </span>
+            </div>
+            <div style="display:flex;align-items:center;gap:1rem;">
+                <span class="badge badge-ok">{{ v.estado }}</span>
+                <span style="font-family:'Orbitron',monospace;color:var(--green);font-size:1.1rem;">
+                    ${{ "%.2f"|format(v.total) }}
+                </span>
+            </div>
+        </div>
+
+        <div style="border-top:1px solid var(--border);padding-top:.8rem;">
+            {% for d in v.detalles %}
+            <div style="display:flex;justify-content:space-between;padding:.3rem 0;color:rgba(192,160,255,.8);font-size:.9rem;">
+                <span>{{ d.producto.emoji }} {{ d.producto.nombre }} <span style="color:rgba(192,160,255,.45);">×{{ d.cantidad }}</span></span>
+                <span style="color:var(--cyan);">${{ "%.2f"|format(d.subtotal) }}</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+{% else %}
+<div class="empty-state">
+    <div class="empty-icon">📦</div>
+    <p class="empty-text">Todavía no tienes pedidos</p>
+    <a href="{{ url_for('cliente.tienda') }}" class="btn btn-primary">¡Ir de compras!</a>
+</div>
+{% endif %}
+{% endblock %}

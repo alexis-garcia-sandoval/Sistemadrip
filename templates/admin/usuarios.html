@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Usuarios{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">USUARIOS 👥</h1>
+    <p class="page-subtitle">{{ usuarios|length }} cliente(s) registrado(s)</p>
+</div>
+
+{% if usuarios %}
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th><th>Nombre</th><th>Correo</th>
+                <th>Tipo</th><th>Registro</th><th>Compras</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for u in usuarios %}
+            <tr>
+                <td style="color:var(--purple);">{{ u.id }}</td>
+                <td style="color:#e0d0ff;">{{ u.nombre }}</td>
+                <td style="color:rgba(192,160,255,.7);">{{ u.correo }}</td>
+                <td><span class="badge badge-cliente">{{ u.tipo }}</span></td>
+                <td>{{ u.fecha_registro.strftime('%d/%m/%Y') }}</td>
+                <td style="color:var(--green);font-family:'Orbitron',monospace;">{{ u.ventas|length }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="empty-state">
+    <div class="empty-icon">👥</div>
+    <p class="empty-text">Sin clientes registrados aún</p>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block title %}Productos{% endblock %}
+
+{% block content %}
+<div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem;">
+    <div>
+        <h1 class="page-title">PRODUCTOS 📦</h1>
+        <p class="page-subtitle">{{ productos|length }} producto(s) encontrado(s)</p>
+    </div>
+    <a href="{{ url_for('admin.agregar_producto') }}" class="btn btn-primary">+ Agregar</a>
+</div>
+
+<!-- Filters -->
+<div class="filters-bar">
+    <a href="{{ url_for('admin.productos') }}"
+       class="filter-pill {% if not categoria_filtro %}active{% endif %}">Todos</a>
+    {% for val, label in categorias %}
+    <a href="{{ url_for('admin.productos', categoria=val) }}"
+       class="filter-pill {% if categoria_filtro == val %}active{% endif %}">{{ label }}</a>
+    {% endfor %}
+
+    <form class="search-bar" method="GET" action="{{ url_for('admin.productos') }}">
+        {% if categoria_filtro %}
+            <input type="hidden" name="categoria" value="{{ categoria_filtro }}">
+        {% endif %}
+        <input type="text" name="busqueda" class="form-control"
+            placeholder="Buscar producto..." value="{{ busqueda }}">
+        <button type="submit" class="btn btn-secondary btn-sm">🔍</button>
+    </form>
+</div>
+
+{% if productos %}
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th><th>Producto</th><th>Categoría</th>
+                <th>Precio</th><th>Stock</th><th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in productos %}
+            <tr>
+                <td style="color:var(--purple);">{{ p.id }}</td>
+                <td>
+                    {{ p.emoji }} <strong style="color:#e0d0ff;">{{ p.nombre }}</strong>
+                    {% if not p.activo %}<span class="badge" style="background:rgba(255,113,206,.15);color:var(--pink);border:1px solid var(--pink);margin-left:.4rem;">inactivo</span>{% endif %}
+                </td>
+                <td style="color:var(--cyan);">{{ p.categoria }}</td>
+                <td style="color:var(--green);">${{ "%.2f"|format(p.precio) }}</td>
+                <td>
+                    {% if p.stock == 0 %}
+                        <span class="stock-out">0 ❌</span>
+                    {% elif p.stock < 5 %}
+                        <span class="stock-low">{{ p.stock }} ⚠️</span>
+                    {% else %}
+                        <span class="stock-ok">{{ p.stock }} ✅</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <div style="display:flex;gap:.4rem;flex-wrap:wrap;">
+                        <a href="{{ url_for('admin.editar_producto', pid=p.id) }}"
+                           class="btn btn-secondary btn-sm">✏️ Editar</a>
+                        <form method="POST" action="{{ url_for('admin.eliminar_producto', pid=p.id) }}"
+                              style="display:inline;">
+                            <button type="submit" class="btn btn-danger btn-sm"
+                                data-confirm="¿Eliminar {{ p.nombre }}?">🗑️</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="empty-state">
+    <div class="empty-icon">📦</div>
+    <p class="empty-text">Sin productos{% if busqueda %} para "{{ busqueda }}"{% endif %}</p>
+    <a href="{{ url_for('admin.agregar_producto') }}" class="btn btn-primary">+ Agregar primero</a>
+</div>
+{% endif %}
+{% endblock %}
