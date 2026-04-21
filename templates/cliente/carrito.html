@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block title %}Carrito{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">CARRITO 🛒</h1>
+    <p class="page-subtitle">{{ items|length }} producto(s) en tu carrito</p>
+</div>
+
+{% if items %}
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Producto</th><th>Precio Unit.</th>
+                <th>Cantidad</th><th>Subtotal</th><th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>
+                    <span class="cart-emoji">{{ item.producto.emoji }}</span>
+                    <span style="color:#e0d0ff;">{{ item.producto.nombre }}</span>
+                </td>
+                <td style="color:var(--cyan);">${{ "%.2f"|format(item.producto.precio) }}</td>
+                <td>
+                    <form method="POST" action="{{ url_for('cliente.actualizar_carrito', item_id=item.id) }}"
+                          style="display:inline;">
+                        <input type="number" name="cantidad" value="{{ item.cantidad }}"
+                               min="1" max="{{ item.producto.stock }}"
+                               class="form-control qty-input"
+                               onchange="this.form.submit()">
+                    </form>
+                </td>
+                <td style="color:var(--green);font-family:'Orbitron',monospace;">
+                    ${{ "%.2f"|format(item.producto.precio * item.cantidad) }}
+                </td>
+                <td>
+                    <form method="POST" action="{{ url_for('cliente.eliminar_carrito', item_id=item.id) }}">
+                        <button type="submit" class="btn btn-danger btn-sm"
+                            data-confirm="¿Eliminar {{ item.producto.nombre }} del carrito?">🗑️</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="cart-total-section">
+    <div class="cart-total-row">
+        <span class="cart-total-label">Total a pagar</span>
+        <span class="cart-total-value">${{ "%.2f"|format(total) }} MXN</span>
+    </div>
+    <form method="POST" action="{{ url_for('cliente.comprar') }}">
+        <button type="submit" class="btn btn-success btn-block"
+            data-confirm="¿Confirmar compra por ${{ '%.2f'|format(total) }} MXN?">
+            ✅ CONFIRMAR COMPRA
+        </button>
+    </form>
+</div>
+
+<div style="margin-top:1rem;text-align:center;">
+    <a href="{{ url_for('cliente.tienda') }}" class="btn btn-secondary">← Seguir comprando</a>
+</div>
+{% else %}
+<div class="empty-state">
+    <div class="empty-icon">🛒</div>
+    <p class="empty-text">Tu carrito está vacío</p>
+    <a href="{{ url_for('cliente.tienda') }}" class="btn btn-primary">Ir a la tienda</a>
+</div>
+{% endif %}
+{% endblock %}

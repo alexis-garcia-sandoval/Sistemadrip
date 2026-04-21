@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}Favoritos{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">FAVORITOS ❤️</h1>
+    <p class="page-subtitle">{{ productos|length }} producto(s) guardado(s)</p>
+</div>
+
+{% if productos %}
+<div class="product-grid">
+    {% for p in productos %}
+    <div class="product-card">
+        <div class="product-thumb">
+            {% if p.imagen_url %}
+                <img src="{{ p.imagen_url }}" alt="{{ p.nombre }}"
+                     onerror="this.parentElement.innerHTML='{{ p.emoji }}'">
+            {% else %}
+                {{ p.emoji }}
+            {% endif %}
+        </div>
+        <div class="product-info">
+            <div class="product-category">{{ p.categoria }}</div>
+            <div class="product-name">{{ p.nombre }}</div>
+            <div class="product-price">${{ "%.2f"|format(p.precio) }}</div>
+            <div class="product-stock">
+                {% if p.stock == 0 %}
+                    <span class="stock-out">❌ Agotado</span>
+                {% elif p.stock <= 5 %}
+                    <span class="stock-low">⚠️ Últimas {{ p.stock }}</span>
+                {% else %}
+                    <span class="stock-ok">✅ En stock</span>
+                {% endif %}
+            </div>
+            <div class="product-actions">
+                {% if p.stock > 0 %}
+                <form method="POST" action="{{ url_for('cliente.agregar_carrito', id_producto=p.id) }}">
+                    <input type="hidden" name="cantidad" value="1">
+                    <button type="submit" class="btn btn-primary btn-sm">🛒 Agregar</button>
+                </form>
+                {% endif %}
+                <form method="POST" action="{{ url_for('cliente.toggle_favorito', id_producto=p.id) }}">
+                    <button type="submit" class="btn btn-danger btn-sm"
+                        data-confirm="¿Quitar de favoritos?">💔 Quitar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <div class="empty-icon">💔</div>
+    <p class="empty-text">No tienes favoritos guardados</p>
+    <a href="{{ url_for('cliente.tienda') }}" class="btn btn-primary">Explorar tienda</a>
+</div>
+{% endif %}
+{% endblock %}

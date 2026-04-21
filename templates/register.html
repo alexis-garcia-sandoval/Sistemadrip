@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}Crear Cuenta{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-logo">
+            <span class="logo-text">DRIP</span>
+            <span class="logo-sub">STORE</span>
+        </div>
+
+        <h1 class="auth-title">CREAR CUENTA</h1>
+        <p class="auth-subtitle">Únete al drip 🎉</p>
+
+        <form method="POST" action="{{ url_for('auth.register') }}">
+            <div class="form-group">
+                <label class="form-label">Nombre</label>
+                <input type="text" name="nombre" class="form-control"
+                    placeholder="Tu nombre" required autocomplete="name">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Correo</label>
+                <input type="email" name="correo" class="form-control"
+                    placeholder="tu@correo.com" required autocomplete="email">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Contraseña</label>
+                <input type="password" name="contrasena" class="form-control"
+                    placeholder="••••••••" required minlength="6">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Confirmar Contraseña</label>
+                <input type="password" name="confirmar" class="form-control"
+                    placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn btn-success btn-block" style="margin-top:1.5rem;">
+                CREAR CUENTA 🎉
+            </button>
+        </form>
+
+        <p style="text-align:center; margin-top:1.5rem; color:rgba(192,160,255,.6); font-size:.9rem;">
+            ¿Ya tienes cuenta?
+            <a href="{{ url_for('auth.login') }}" class="auth-link">Inicia sesión</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

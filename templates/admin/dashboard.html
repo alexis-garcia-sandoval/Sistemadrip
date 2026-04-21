@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">DASHBOARD 📊</h1>
+    <p class="page-subtitle">Panel de control — SistemaDrip Admin</p>
+</div>
+
+<!-- Stats -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon">📦</div>
+        <div class="stat-value">{{ total_productos }}</div>
+        <div class="stat-label">Productos Activos</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">👥</div>
+        <div class="stat-value">{{ total_usuarios }}</div>
+        <div class="stat-label">Clientes</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">🛒</div>
+        <div class="stat-value">{{ total_ventas }}</div>
+        <div class="stat-label">Ventas Totales</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">💰</div>
+        <div class="stat-value">${{ "%.0f"|format(ingresos_total) }}</div>
+        <div class="stat-label">Ingresos MXN</div>
+    </div>
+</div>
+
+<!-- Top products + Low stock -->
+<div class="two-col" style="margin-bottom:1.5rem;">
+    <div class="card">
+        <h3 style="font-family:'Orbitron',monospace;color:var(--cyan);margin-bottom:1rem;font-size:.85rem;letter-spacing:2px;">
+            🔥 TOP PRODUCTOS
+        </h3>
+        {% if productos_top %}
+            {% for nombre, emoji, total in productos_top %}
+            <div style="display:flex;justify-content:space-between;padding:.45rem 0;border-bottom:1px solid rgba(185,103,255,.1);">
+                <span>{{ emoji }} {{ nombre }}</span>
+                <span style="color:var(--green);font-family:'Orbitron',monospace;">{{ total }}</span>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p style="color:rgba(192,160,255,.45);">Sin ventas todavía</p>
+        {% endif %}
+    </div>
+
+    <div class="card">
+        <h3 style="font-family:'Orbitron',monospace;color:var(--yellow);margin-bottom:1rem;font-size:.85rem;letter-spacing:2px;">
+            ⚠️ STOCK BAJO
+        </h3>
+        {% if stock_bajo %}
+            {% for p in stock_bajo %}
+            <div style="display:flex;justify-content:space-between;padding:.45rem 0;border-bottom:1px solid rgba(185,103,255,.1);">
+                <span>{{ p.emoji }} {{ p.nombre }}</span>
+                <span style="color:var(--yellow);font-family:'Orbitron',monospace;">{{ p.stock }} uds</span>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p style="color:var(--green);">✅ Todo en orden</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Recent sales -->
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+    <h3 style="font-family:'Orbitron',monospace;color:var(--purple);font-size:.85rem;letter-spacing:2px;">
+        🛍️ VENTAS RECIENTES
+    </h3>
+    <a href="{{ url_for('admin.ventas') }}" class="btn btn-secondary btn-sm">Ver todas</a>
+</div>
+
+{% if ventas_recientes %}
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>#</th><th>Cliente</th><th>Total</th><th>Fecha</th><th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for v in ventas_recientes %}
+            <tr>
+                <td style="color:var(--purple);">#{{ v.id }}</td>
+                <td>{{ v.usuario.nombre }}</td>
+                <td style="color:var(--green);">${{ "%.2f"|format(v.total) }}</td>
+                <td>{{ v.fecha.strftime('%d/%m/%Y %H:%M') }}</td>
+                <td><span class="badge badge-ok">{{ v.estado }}</span></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="empty-state">
+    <div class="empty-icon">📭</div>
+    <p class="empty-text">Sin ventas aún</p>
+</div>
+{% endif %}
+
+<!-- Quick actions -->
+<div style="margin-top:2rem;display:flex;gap:1rem;flex-wrap:wrap;">
+    <a href="{{ url_for('admin.agregar_producto') }}" class="btn btn-primary">+ Agregar Producto</a>
+    <a href="{{ url_for('admin.backup') }}" class="btn btn-secondary">💾 Descargar Backup</a>
+</div>
+{% endblock %}
